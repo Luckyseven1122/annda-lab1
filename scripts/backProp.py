@@ -2,7 +2,7 @@
 
 import numpy as np
 
-def backProp(data, labels, noHidden, epochs=20):
+def trainMultiLayer(data, labels, noHidden, epochs=20):
     input_size = data.shape[0] + 1
     eta = 0.1/data.shape[1]
     bias_inputs = np.ones(data.shape[1])
@@ -15,7 +15,7 @@ def backProp(data, labels, noHidden, epochs=20):
     dW = 0
     dV = 0
     for epoch in range(epochs):
-        error = 
+        # TODO: Add error and rate functions
         #Forward pass
         hin = (np.dot(W, training_data))
         hout = np.divide(2, 1+np.exp(-hin))-1
@@ -29,7 +29,6 @@ def backProp(data, labels, noHidden, epochs=20):
         V = V.reshape(1,-1)
         delta_h = np.multiply(np.dot(V.T, delta_o), np.multiply(1+hout, 1-hout))*0.5
         delta_h = delta_h[0:noHidden, :]
-        print(delta_h.shape)
 
         #Weight update
         alpha = 0.9
@@ -37,8 +36,10 @@ def backProp(data, labels, noHidden, epochs=20):
         dV = np.multiply(dV, alpha) - np.multiply(np.dot(delta_o, hout.T), 1-alpha)
         W = W + np.multiply(dW, eta)
         V = V + np.multiply(dV, eta)
+    return W, V
 
-    return W, V, errors
+def evaluateMultiLayer(W, V, testData, labels):
+    # TODO: Evaluate testdata after training network
 
 if __name__ == '__main__':
 
@@ -46,4 +47,7 @@ if __name__ == '__main__':
 
     data, labels = lin_sep((1, 0), 5)
     noHidden = 4
-    weights, error = backProp(data, labels, noHidden)
+    W, V = trainMultiLayer(data, labels, noHidden)
+
+    print(W)
+    print(V)
