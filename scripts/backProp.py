@@ -15,6 +15,7 @@ def backProp(data, labels, noHidden, epochs=20):
     dW = 0
     dV = 0
     for epoch in range(epochs):
+        error = 
         #Forward pass
         hin = (np.dot(W, training_data))
         hout = np.divide(2, 1+np.exp(-hin))-1
@@ -37,6 +38,7 @@ def backProp(data, labels, noHidden, epochs=20):
         W = W + np.multiply(dW, eta)
         V = V + np.multiply(dV, eta)
 
+    return W, V, errors
 
 if __name__ == '__main__':
 
