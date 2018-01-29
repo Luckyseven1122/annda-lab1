@@ -4,9 +4,11 @@ import numpy as np
 import numpy.random as rnd
 import matplotlib.pyplot as plt
 
-def perceptron_learning(data, labels, epochs=10):
+def perceptron_learning(data, labels, epochs=100):
 
-    eta = 0.2
+    error = []
+
+    eta = 0.1/data.shape[1]
 
     step_func = np.vectorize(lambda x: int(x >= 0))
 
@@ -20,13 +22,16 @@ def perceptron_learning(data, labels, epochs=10):
         outputs_from_weights = np.dot(weights, training_data)
         outputs = step_func(outputs_from_weights)
         errors = labels - outputs
-        print('Epoch {}, error: {}'.format(epoch, np.sum(errors)))
-        plot_boundary(data, labels, weights)
-        weights += eta*np.sum(errors)
 
-    return weights
+        error.append(np. mean(errors**2/2))
+        print('Epoch {}, error: {}'.format(epoch, error[epoch]))
 
-def delta_rule_learning(data, labels, epochs=500):
+        weight_update = np.dot(training_data, errors.T)
+        weights += eta*weight_update
+
+    return weights, error
+
+def delta_rule_learning(data, labels, epochs=10):
 
     error = []
 
@@ -69,9 +74,9 @@ def plot_boundary(data, labels, weights):
     grid_class = classify(grid_x, grid_y).flatten()
     grid_colors = np.vectorize(lambda x: label_color_map.get(x))(grid_class)
 
-    plt.scatter(grid_x, grid_y, c=grid_colors, alpha=0.2)
+    plt.scatter(grid_x, grid_y, c=grid_colors, alpha=0.05)
     plt.scatter(data[0, :], data[1, :], c=label_colors)
-    plt.plot(boundary_x, boundary_y)
+    plt.plot(boundary_x, boundary_y, c='black')
     plt.quiver(boundary_x[1], boundary_y[1], weights[0], weights[1], angles='xy', minlength=1)
 
 if __name__ == '__main__':
@@ -79,7 +84,7 @@ if __name__ == '__main__':
     from datageneration import lin_sep
 
     data, labels = lin_sep((1, 0), 100)
-    weights, error = delta_rule_learning(data, labels)
+    weights, error = perceptron_learning(data, labels)
 
 
     plt.figure()
