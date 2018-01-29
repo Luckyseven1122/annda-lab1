@@ -37,11 +37,9 @@ def trainMultiLayer(data, labels, eta, noHidden, nOutput=1, epochs=100):
         dV = (dV*alpha) - np.dot(delta_o, hout.T) * (1-alpha)
         W = W + dW*eta
         V = V + dV*eta
-    return W, V, error
-
+    return out, W, V, error
 
 def evaluateMultiLayer(W, V, testData, labels):
-    print(labels.shape)
     bias_inputs = np.ones(testData.shape[1])
     testData = np.vstack((testData, bias_inputs))
     hin = np.dot(W, testData)
@@ -53,20 +51,19 @@ def evaluateMultiLayer(W, V, testData, labels):
     error = np.sum(np.power(errors, 2)/2)/len(errors[0])
     return error
 
-
 if __name__ == '__main__':
-
     from datageneration import lin_sep
     from learning import plot_boundary
     data, labels = lin_sep((1, 0), 100)
     testData, testLabels = lin_sep((1, 0), 50)
-    noHidden = 10
-    eta = 0.1
-    epochs = 100
+    noHidden = 2
+    eta = 0.01
+    epochs = 20
     nOutput = 1
     W, V, error = trainMultiLayer(data, labels, eta, noHidden, nOutput, epochs)
     testError = evaluateMultiLayer(W, V, testData, testLabels)
     print("Test error: {}".format(testError))
+
     label_color_map = {
         1: 'b',
         0: 'r',
