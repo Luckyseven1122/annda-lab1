@@ -12,14 +12,14 @@ import matplotlib.pyplot as plt
 def lin_sep(class_labels, size):
     """Generates two classes of linearly separable data"""
 
-    class1_mean = [2, 0]
+    class1_mean = [1, 1]
     class1_cov = np.diag([0.2, 0.1])
     class1_labels = class_labels[0] * np.ones(size)
 
     class1_xy = rnd.multivariate_normal(class1_mean, class1_cov, size).T
     class1_xy_labels = np.vstack((class1_xy, class1_labels))
 
-    class2_mean = [0, 2]
+    class2_mean = [-1, -1]
     class2_cov = np.diag([0.1, 0.2])
     class2_labels = class_labels[1] * np.ones(size)
 
@@ -33,6 +33,12 @@ def lin_sep(class_labels, size):
 
     return xy, labels
 
+def sparse_data():
+
+    data = -1 * np.ones((8, 8))
+    for i in range(8):
+        data[i, i] = 1
+    return data
 
 if __name__ == '__main__':
 
