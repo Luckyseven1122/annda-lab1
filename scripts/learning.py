@@ -42,12 +42,10 @@ def delta_rule_learning(data, labels, epochs=500):
         outputs_from_weights = np.dot(weights, training_data)
         errors = labels - outputs_from_weights
 
-        error.append(sum(np.power(errors, 2)/2)/len(errors))
+        error.append(np.mean(errors**2/2))
         print('Epoch {}, error: {}'.format(epoch, error[epoch]))
 
-        weight_update = np.zeros(weights.shape)
-        for i, d in enumerate(training_data.T):
-            weight_update += errors[i]*d
+        weight_update = np.dot(training_data, errors.T)
         weights += eta*weight_update
 
     return weights, error
@@ -71,13 +69,10 @@ def plot_boundary(data, labels, weights):
     grid_class = classify(grid_x, grid_y).flatten()
     grid_colors = np.vectorize(lambda x: label_color_map.get(x))(grid_class)
 
-    plt.figure()
-
     plt.scatter(grid_x, grid_y, c=grid_colors, alpha=0.2)
     plt.scatter(data[0, :], data[1, :], c=label_colors)
     plt.plot(boundary_x, boundary_y)
     plt.quiver(boundary_x[1], boundary_y[1], weights[0], weights[1], angles='xy', minlength=1)
-    plt.show()
 
 if __name__ == '__main__':
 
@@ -87,5 +82,8 @@ if __name__ == '__main__':
     weights, error = delta_rule_learning(data, labels)
 
 
+    plt.figure()
     plt.plot(error)
+    plt.figure()
     plot_boundary(data, labels, weights)
+    plt.show()
