@@ -40,6 +40,23 @@ def sparse_data():
         data[i, i] = 1
     return data
 
+def mackey_glass(x0, length):
+
+    beta = 0.2
+    gamma = 0.1
+    n = 10
+    tau = 25
+
+    x = np.zeros(length)
+    x[0] = x0
+
+    for i in range(1, tau+1):
+        x[i] = (1 - gamma) * x[i-1]
+    for i in range(tau+1, length):
+        x[i] = (1 - gamma) * x[i-1] + (beta * x[i-tau])/(1 + x[i-tau]**n)
+
+    return x
+
 if __name__ == '__main__':
 
     label_color_map = {
