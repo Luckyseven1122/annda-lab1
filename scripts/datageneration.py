@@ -33,6 +33,26 @@ def lin_sep(class_labels, size):
 
     return xy, labels
 
+def non_lin_sep(class_labels, size, mean1, mean2):
+    class1_cov = np.diag([1, 1])
+    class1_labels = class_labels[0] * np.ones(size)
+
+    class1_xy = rnd.multivariate_normal(mean1, class1_cov, size).T
+    class1_xy_labels = np.vstack((class1_xy, class1_labels))
+
+    class2_cov = np.diag([1,1])
+    class2_labels = class_labels[1] * np.ones(size)
+
+    class2_xy = rnd.multivariate_normal(mean2, class2_cov, size).T
+    class2_xy_labels = np.vstack((class2_xy, class2_labels))
+
+    xy_labels = np.hstack((class1_xy_labels, class2_xy_labels))
+    rnd.shuffle(xy_labels.T)
+    xy = xy_labels[0:2, :]
+    labels = xy_labels[-1, :]
+
+    return xy, labels
+
 def sparse_data():
 
     data = -1 * np.ones((8, 8))
