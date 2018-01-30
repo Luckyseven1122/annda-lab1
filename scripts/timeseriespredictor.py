@@ -142,8 +142,9 @@ validation_target = Variable(torch.Tensor(mglass[t_valid+5]))
 
 loss_fnc = nn.MSELoss()
 
-learning_rate = 0.7
+learning_rate = 0.1
 alpha = 0.4
+regularization = 0.001
 
 loss_over_epoch = []
 valid_over_epoch = []
@@ -166,17 +167,25 @@ stopped_learning_counter = 0
 early_stopper = EarlyStop()
 
 for epoch in itertools.count():
+
+    l2_norm = Variable(torch.FloatTensor(1), requires_grad=True)
+    for param in neural_net.parameters():
+        l2_norm.data += param.norm(2).data
+
     # errors over training data
     prediction = neural_net.forward(training_data)
     loss = loss_fnc(prediction, training_target)
+    loss += regularization*l2_norm
     loss_over_epoch.append(loss.data[0])
 
     # errors over validation data
     validation_prediction = neural_net.forward(validation_data)
     valid_error = loss_fnc(validation_prediction, validation_target)
+    valid_error += regularization*l2_norm
     valid_over_epoch.append(valid_error.data[0])
 
     for param, curr_grad in zip(neural_net.parameters(), curr_grads):
+
         curr_grad = param.grad.data * alpha
 
     neural_net.zero_grad()
